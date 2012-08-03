@@ -8,17 +8,18 @@ var crud = require('./crud.js');
 var auth = require('./auth.js');
 var display = require('./display.js');
 
-// mapping of bool --> authentication needed?
-var urlMap = {};
-urlMap["/"] = false;
-urlMap["/login"] = false;
-urlMap["/logout"] = true;
-urlMap["/crud"] = true;
-
+// mapping of bool = authentication needed? to uri
+var urlMap = {
+    "/": false,
+    "/login": false,
+    "/logout": true,
+    "/crud": true
+    };
 // superuser info
-var authMap = {};
-authMap["password"] = 'foo';
-authMap["user"] = 'bar';
+var authMap = {
+    "user":'foo',
+    "password":'bar'
+    };
 
 var app = connect()
         .use(connect.logger({ format: ':method :url' }))
