@@ -25,16 +25,15 @@ var connect = require('connect'),
     display = require('./display.js');
 
 // the database connection and info
-var dbName = 'test',
-    userColl = 'users',
-    questColl = 'questionnaires';
+var dbInfo ={
+    "dbName" : 'test',
+    "userColl" : 'users',
+    "questColl" : 'questionnaires',
+    "port" : 27017
+    };
 
-var mongo = require('mongodb'),
-    Server = mongo.Server,
-    Db = mongo.Db;
-
-var server = new Server('localhost', 27017, {auto_reconnect: true}),
-    db = new Db(dbName, server);
+//var server = new Server('localhost', dbInfo["port"], {auto_reconnect: true, poolSize: 10}),
+    //db = new Db(dbInfo["dbName"], server);
 
 // the app with middleware
 var app = connect()
@@ -45,8 +44,8 @@ var app = connect()
         .use(auth(urlMap))
         .use('/login', login(authMap))
         .use('/logout', logout())
-        .use('/crud', crud(db))
-        .use(display(db, questColl));
+        .use('/crud', crud(dbInfo))
+        .use(display(dbInfo));
 
 // https options -- need key and cert
 //var https = require('https');
