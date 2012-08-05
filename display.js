@@ -2,10 +2,9 @@
 
 var assert = require('assert');
 
-module.exports = function displaySetup(dBInstance, questColl)
+module.exports = function displaySetup(db, dBInfo)
     {
-        var db = dBInstance,
-            quest = questColl;
+        var quest = questColl;
         return function displayHandle(req, res, next)
             {
                 db.open(function (err, db)
@@ -22,7 +21,12 @@ module.exports = function displaySetup(dBInstance, questColl)
                                                 var stream = collection.find().stream();
                                                 stream.on("data", function(item) 
                                                     {
-                                                        res.write(JSON.stringify(item));
+                                                        res.write(JSON.stringify(item) + '\n');
+                                                        stream.pause();
+                                                        setTimeout(function ()
+                                                            {
+                                                                stream.resume();
+                                                            }, 1);
                                                     });
                                                 stream.on("close", function() 
                                                     {
