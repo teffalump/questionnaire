@@ -32,8 +32,12 @@ var dbInfo ={
     "port" : 27017
     };
 
-//var server = new Server('localhost', dbInfo["port"], {auto_reconnect: true, poolSize: 10}),
-    //db = new Db(dbInfo["dbName"], server);
+var mongo = require('mongodb'),
+  Server = mongo.Server,
+  Db = mongo.Db;
+
+var server = new Server('localhost', dbInfo["port"], {auto_reconnect: true, poolSize: 10}),
+    db = new Db(dbInfo["dbName"], server);
 
 // the app with middleware
 var app = connect()
@@ -44,8 +48,8 @@ var app = connect()
         .use(auth(urlMap))
         .use('/login', login(authMap))
         .use('/logout', logout())
-        .use('/crud', crud(dbInfo))
-        .use(display(dbInfo));
+        .use('/crud', crud(db,dbInfo))
+        .use(display(db,dbInfo));
 
 // https options -- need key and cert
 //var https = require('https');
@@ -59,4 +63,11 @@ var app = connect()
 //https.createServer(options, app).listen(9000);
 
 var http = require('http');
-http.createServer(app).listen(9000);
+
+db.open(function (err, db)
+            {
+                if (!err)
+                    {
+                        http.createServer(app).listen(9000);
+                    }
+            });
