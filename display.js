@@ -1,5 +1,7 @@
 // show all the statistics, etc
 
+var assert = require('assert');
+
 module.exports = function displaySetup(dBInstance, questColl)
     {
         var db = dBInstance,
@@ -12,17 +14,24 @@ module.exports = function displaySetup(dBInstance, questColl)
                                 {
                                     db.collection(quest, function (err, collection)
                                             {
-                                                assert.ok(err != null, quest + " does not exist");
+                                                //assert.ok(err != null, quest + " does not exist");
 
                                                 // need to excise unneeded info
                                                 // in future
                                                 res.writeHead(200);
-                                                var stream = collection.find().streamRecords();
-                                                stream.on("data", function(item) {res.write(item)});
-                                                stream.on("end", function() {res.end()});
+                                                var stream = collection.find().stream();
+                                                stream.on("data", function(item) 
+                                                    {
+                                                        res.write(JSON.stringify(item));
+                                                    });
+                                                stream.on("close", function() 
+                                                    {
+                                                        res.end();
+                                                        db.close();
+                                                    });
                                                 return;
-                                            };
+                                            });
                                 };
-                        };
+                        });
             };
     };
