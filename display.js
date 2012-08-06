@@ -12,17 +12,19 @@ module.exports = function displaySetup(db, dBInfo)
 
                             // need to excise unneeded info
                             // in future
-                            res.writeHead(200);
+                            //res.writeHead(200);
+
+                            // stream
                             var stream = collection.find().stream();
                             stream.on("data", function(item) 
                                 {
-                                    res.write(JSON.stringify(item) + '\n');
+                                    console.log(JSON.stringify(item));
                                 });
                             stream.on("close", function() 
                                 {
-                                    res.end();
+                                    res.end('end');
+                                    return;
                                 });
-                            return;
                         });
             };
     };

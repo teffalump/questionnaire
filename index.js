@@ -13,7 +13,7 @@ var urlMap = {
     "/": false,
     "/login": false,
     "/logout": true,
-    "/crud": true
+    "/crud": false
     };
 
 // the connect prepreqs
