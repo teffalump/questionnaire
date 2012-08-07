@@ -15,8 +15,27 @@ module.exports = function crudSetup(db, dBInfo)
                     {
                         case "POST":
                             // post method
-                            return;
+                            //    receive a questionnaire
+                            //    and add it
+                            // what should be unique?
+                            var form=req.body;
+
+                            // should be validated first
+                            // gotta figure this out
+
+                            // save document
+                            db.collection( dBInfo["questColl"], function (err, collection)
+                                    {
+                                        collection.insert(form, {safe:true}, function (err, result)
+                                            {
+                                                assert.equal(null, err);
+                                                res.writeHead(201);
+                                                res.end('Resource created')
+                                                return;
+                                            });
+                                    });
                             break;
+
                         case "GET":
                             // get method
                             // unlike DELETE, I feel GET should return all
@@ -37,6 +56,7 @@ module.exports = function crudSetup(db, dBInfo)
                             var search = {};
                             search[key] = regexp;
 
+                            // execute query
                             console.log(search);
                             db.collection(dBInfo["questColl"], function (err, collection)
                                     {
@@ -44,15 +64,16 @@ module.exports = function crudSetup(db, dBInfo)
                                         res.writeHead(200);
                                         stream.on("data", function (item)
                                             {
-                                                res.write(JSON.stringify(item));
+                                                res.write(JSON.stringify(item) + '\n');
                                             });
                                         stream.on("close", function ()
                                             {
                                                 res.end();
+                                                return;
                                             });
                                     });
-                            return;
                             break;
+
                         case "DELETE":
                             // delete method
                             // gotta decide how to specify record
@@ -71,6 +92,7 @@ module.exports = function crudSetup(db, dBInfo)
                                                 });
                                     });
                             break;
+
                         default:
                             // method not recognized
                             res.writeHead(405);
